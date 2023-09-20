@@ -1,0 +1,9 @@
+**/a.out
+build
+build/**
+.vscode
+**/.env
+**/.obj
+*.spv
+*.a
+.env.cmake
