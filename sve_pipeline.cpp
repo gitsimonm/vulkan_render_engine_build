@@ -126,6 +126,10 @@ namespace sve {
         }
     };
 
+    void SvePipeline::bind(VkCommandBuffer commandBuffer){
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    };
+
     PipelineConfigInfo SvePipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
         PipelineConfigInfo configInfo{};
 
@@ -143,7 +147,6 @@ namespace sve {
         configInfo.scissor.offset = {0, 0};
         configInfo.scissor.extent = {width, height};
 
-       
 
         configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
