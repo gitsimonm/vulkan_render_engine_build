@@ -19,7 +19,7 @@ class SveSwapChain {
   ~SveSwapChain();
 
   SveSwapChain(const SveSwapChain &) = delete;
-  void operator=(const SveSwapChain &) = delete;
+  SveSwapChain &operator=(const SveSwapChain &) = delete;
 
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }

@@ -1,4 +1,5 @@
 #include "sve_pipeline.hpp"
+#include "sve_model.hpp"
 
 #include <fstream>
 #include <vector>
@@ -45,11 +46,11 @@ namespace sve {
         const std::string& vertFilePath, 
         const std::string& fragFilepath, 
         const PipelineConfigInfo& configInfo){
-
-        assert(configInfo.pipelineLayout != VK_NULL_HANDLE &&
+        assert(
+            configInfo.pipelineLayout != VK_NULL_HANDLE &&
          "Cannot create graphics pipeline:: no pipelineLayout provided in configInfo");
-
-        assert(configInfo.renderPass != VK_NULL_HANDLE &&
+        assert(
+            configInfo.renderPass != VK_NULL_HANDLE &&
          "Cannot create graphics pipeline:: no renderPass provided in configInfo");
 
         auto vertCode = readFile(vertFilePath);
@@ -66,7 +67,6 @@ namespace sve {
         shaderStages[0].flags = 0;
         shaderStages[0].pNext = nullptr;
         shaderStages[0].pSpecializationInfo = nullptr;
-
         shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
         shaderStages[1].module = fragShaderModule;
@@ -75,12 +75,14 @@ namespace sve {
         shaderStages[1].pNext = nullptr;
         shaderStages[1].pSpecializationInfo = nullptr;
         
+        auto bindingDescriptions = SveModel::Vertex::getBindingDescriptions();
+        auto attributeDescriptions = SveModel::Vertex::getAttributeDescriptions();
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-        vertexInputInfo.pVertexBindingDescriptions = nullptr;
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
+        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
         VkPipelineViewportStateCreateInfo viewportInfo{};
         viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -109,7 +111,13 @@ namespace sve {
         pipelineInfo.basePipelineIndex = -1;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(sveDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(
+                sveDevice.device(), 
+                VK_NULL_HANDLE, 
+                1, 
+                &pipelineInfo, 
+                nullptr, 
+                &graphicsPipeline) != VK_SUCCESS) {
             throw std::runtime_error("failed to create graphics pipeline");
         }
 

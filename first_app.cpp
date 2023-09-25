@@ -6,6 +6,7 @@
 namespace sve {
 
     FirstApp::FirstApp() {
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers(); 
@@ -23,6 +24,14 @@ namespace sve {
 
         vkDeviceWaitIdle(sveDevice.device());
     }
+
+    void FirstApp::loadModels() {
+  std::vector<SveModel::Vertex> vertices{
+    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, 
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}, 
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+  sveModel = std::make_unique<SveModel>(sveDevice, vertices);
+}
 
     void FirstApp::createPipelineLayout() {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -44,8 +53,7 @@ namespace sve {
             sveDevice,
             "shaders/simple_shader.vert.spv",
             "shaders/simple_shader.frag.spv",
-            pipelineConfig  
-        ); 
+            pipelineConfig); 
     }
 
     void FirstApp::createCommandBuffers(){
@@ -87,7 +95,8 @@ namespace sve {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             svePipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            sveModel->bind(commandBuffers[i]);
+            sveModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

@@ -4,6 +4,7 @@
 #include "sve_pipeline.hpp"
 #include "sve_device.hpp"
 #include "sve_swap_chain.hpp"
+#include "sve_model.hpp"
 
 // std
 #include <memory>
@@ -25,7 +26,7 @@ namespace sve {
 
 
         private:
-
+            void loadModels();
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
@@ -37,5 +38,6 @@ namespace sve {
             std::unique_ptr<SvePipeline> svePipeline; 
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
+            std::unique_ptr<SveModel> sveModel;
     };
 }

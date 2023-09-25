@@ -31,7 +31,7 @@ namespace sve {
             ~SvePipeline();
 
             SvePipeline(const SvePipeline&) = delete;
-            void operator=(const SvePipeline&) = delete;
+            SvePipeline &operator=(const SvePipeline&) = delete;
 
             void bind(VkCommandBuffer commandBuffer);
 
