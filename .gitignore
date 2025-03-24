@@ -7,3 +7,4 @@ build/**
 *.spv
 *.a
 .env.cmake
+.DS_Store
