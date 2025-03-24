@@ -30,11 +30,14 @@ namespace sve {
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
+            void freeCommandBuffers();
             void drawFrame();
+            void recreateSwapChain();
+            void recordCommandBuffer(int imageIndex);
 
             SveWindow sveWindow{WIDTH, HEIGHT, "Hello World!"};
             SveDevice sveDevice{sveWindow};
-            SveSwapChain sveSwapChain{sveDevice, sveWindow.getExtent()};
+            std::unique_ptr<SveSwapChain> sveSwapChain;
             std::unique_ptr<SvePipeline> svePipeline; 
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
